@@ -8,19 +8,22 @@
    <script src="scripts/main.js"></script>
 </head>
 <body>
+
+   <!-- Add Navigation Bar section -->
    <header>
       <nav class="navbar">
          <img src="assets/images/Tasklogoo.png" alt="TaskTamer logo" class="logo-image"/>
          <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About Us</a></li>
-            <li><a href="#features">Features</a></li>
+            <li><a href="#products">Features</a></li>
             <li><a href="#contact">Contact Us</a></li>
          </ul>
          <a href="#hero" class="nav-cta">Get Started</a>
       </nav>
    </header>
 
+   <!-- Add Hero section -->
    <section class="hero" id="home">
       <img src="assets/images/TaskTamerHeader.png" alt="TaskTamer Background" class="hero-background"/>
       <div class="hero-section">
@@ -39,6 +42,61 @@
          <img src="assets/images/Tasklogo.jpg" alt="TaskTamer Logo" class="logo-img"/>
       </div>
   </section>
+
+  <!-- Add About TaskTamer section -->
+   <section id="products"  class="features-section">
+      <h2>Explore TaskTamer Tools</h2>
+      <p class="features-subtitle">Everything you need to turn tasks into triumphs.</p>
+      <div class="carousel-section">
+
+         <div class="carousels" id="carousel">
+            <!-- Card 1 -->
+            <div class="card">
+               <h3>Quest List</h3>
+               <p>Turn your daily to-dos into quests you can conquer.</p>
+               <img src="assets/images/Icon1.png" alt="Quest Icon" class="icon1">
+               <h4><em>Dynamic Quest Levels</em></h4>
+               <p>AI analyzes progress to adapt difficulty.</p>
+               <p>Tasks stay challenging yet manageable, keeping you engaged without overwhelm.</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card">
+               <h3>Challenge Arena</h3>
+               <p>Compete with friends in real-time task battles.</p>
+               <img src="assets/images/Icon2.png" alt="Leaderboard Icon" class="icon2">
+               <h4><em>Real-Time XP Leaderboards</em></h4>
+               <p>Live scoring and ranking</p>
+               <p>Adds social motivation and encourages friendly rivalry to boost productivity.</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card">
+               <h3>Smart Scheduler</h3>
+               <p>Get personalized scheduling help from your AI buddy.</p>
+               <img src="assets/images/Icon3.png" alt="AI Scheduler Icon" class="icon3">
+               <h4><em>Smart Scheduling Assistant</em></h4>
+               <p>AI analyzes habits, deadlines & time slots</p>
+               <p>Recommends the best times for tasks and nudges you with smart reminders.</p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card">
+               <h3>Streak Feature</h3>
+               <p>Build healthy habits that last by completing tasks.</p>
+               <img src="assets/images/Icon4.png" alt="Streak Icon" class="icon4">
+               <h4><em>Daily Streak Tracker</em></h4>
+               <p>Visual streak badges and motivational reminders</p>
+               <p>Encourages consistency and healthy routines through gamified habit tracking.</p>
+            </div>
+         </div>
+      </div>
+      <div>
+         <button class="carousel-btn left" id="scroll-left">&#8592;</button>
+         <button class="carousel-btn right" id="scroll-right">&#8594;</button>
+      </div>
+   </section>
+
 
 </body>
 </html>
