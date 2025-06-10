@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TaskTamer – Startup Profile Website
 
 TaskTamer is a playful, AI-powered productivity startup that transforms everyday tasks into exciting quests.  
