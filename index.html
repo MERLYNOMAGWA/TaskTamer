@@ -5,6 +5,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>TaskTamer</title>
    <link rel="stylesheet" href="styles/style.css">
+   <script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 
@@ -249,7 +250,7 @@
       </div>
    </section>  
 
-   <section id="contact" class="section">
+   <section id="contact" class="contactSection">
       <h2>Get in Touch</h2>
       <p>Let us know how we can help you or share your ideas with TaskTamer!</p>
       <div class="contact-form-container">
@@ -289,7 +290,188 @@
       </div>
    </footer>
 
+   <script>
+      // TaskTamer AI Assistant Chat Script with Puter.js Integration
 
-   <script src="scripts/main.js"></script>
+// Dynamically load context (bonus)
+let personalContext = "";
+
+fetch('context.txt')
+  .then(response => response.text())
+  .then(data => {
+    personalContext = data;
+  })
+  .catch(error => {
+    console.warn("Failed to load dynamic context. Using fallback.");
+    personalContext = `
+You are an AI assistant representing TaskTamer, a productivity-focused startup. Here's the comprehensive information about TaskTamer:
+
+  STARTUP OVERVIEW:
+  - Name: TaskTamer
+  - Mission: To gamify productivity for students and mentors by turning tasks into engaging quests
+  - Product Type: Web-based productivity tool with gamification features
+
+  FEATURES:
+  1. Quest List:
+     - Daily tasks become quests
+     - AI adjusts difficulty based on user progress
+  2. Challenge Arena:
+     - Compete with friends
+     - Real-time leaderboards and XP tracking
+  3. Smart Scheduler:
+     - AI-powered time management suggestions
+     - Personalized reminders
+  4. Streak Tracker:
+     - Encourages habit building
+     - Visual badges and motivational nudges
+
+  TARGET AUDIENCE:
+  - Students: Stay motivated and organized with gamified to-dos
+  - Mentors: Assign challenges and track student progress
+
+  COMPANY VALUES:
+  - Fun + Functionality: Merging productivity with gamified experience
+  - Personalization: AI adapts to each user's behavior
+  - Engagement: Keep users consistent with rewards and social features
+
+  CONTACT:
+  - Website: tasktamer.ai
+  - Email: support@tasktamer.ai
+  - Social: @TaskTamer on Twitter, LinkedIn
+
+When answering questions, be friendly, helpful, and encouraging. Guide users on how to use features, explain benefits clearly, and represent the TaskTamer brand with enthusiasm.
+    `;
+  });
+
+// Initialize Puter.js
+let puterInitialized = false;
+window.addEventListener("load", initializePuter);
+
+function initializePuter() {
+  if (puterInitialized) return;
+  try {
+    puterInitialized = true;
+    console.log("Puter initialized");
+  } catch (error) {
+    console.error("Puter initialization error:", error);
+    puterInitialized = false;
+  }
+}
+
+// DOM Elements
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+const sendButton = document.getElementById("sendButton");
+const typingIndicator = document.getElementById("typingIndicator");
+
+// Add message to UI
+function addMessage(content, isUser = false) {
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message ${isUser ? "user" : "bot"}`;
+
+  const avatarDiv = document.createElement("div");
+  avatarDiv.className = `message-avatar ${isUser ? "user-avatar" : "bot-avatar"}`;
+  avatarDiv.textContent = isUser ? "U" : "AI";
+
+  const bubbleDiv = document.createElement("div");
+  bubbleDiv.className = "message-bubble";
+  bubbleDiv.textContent = content;
+
+  if (isUser) {
+    messageDiv.appendChild(bubbleDiv);
+    messageDiv.appendChild(avatarDiv);
+  } else {
+    messageDiv.appendChild(avatarDiv);
+    messageDiv.appendChild(bubbleDiv);
+  }
+
+  chatMessages.appendChild(messageDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTypingIndicator() {
+  typingIndicator.style.display = "flex";
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTypingIndicator() {
+  typingIndicator.style.display = "none";
+}
+
+// Send Message Handler
+async function sendMessage() {
+  const message = chatInput.value.trim();
+  if (!message) {
+    addMessage("Please enter a question!", false);
+    return;
+  }
+
+  addMessage(message, true);
+  chatInput.value = "";
+  sendButton.disabled = true;
+  showTypingIndicator();
+
+  try {
+    await initializePuter();
+
+    const fullPrompt = `${personalContext}\n\nUser question: ${message}\n\nPlease respond as the TaskTamer AI assistant, providing helpful and friendly information.`;
+
+    const response = await puter.ai.chat(fullPrompt, {
+      model: "gpt-4",
+      temperature: 0.7,
+      max_tokens: 500,
+    });
+
+    hideTypingIndicator();
+
+    if (response && response.message) {
+      addMessage(response.message);
+    } else {
+      addMessage("I'm TaskTamer! Ask me how to use features like quests, leaderboards, scheduling, or tracking streaks.");
+    }
+  } catch (error) {
+    console.error("Chat error:", error);
+    hideTypingIndicator();
+    const fallbackResponse = getFallbackResponse(message.toLowerCase());
+    addMessage(fallbackResponse);
+  }
+
+  sendButton.disabled = false;
+}
+
+// Fallback response generator
+function getFallbackResponse(message) {
+  if (message.includes("who founded") || message.includes("founder")) {
+    return "TaskTamer was founded by a group of educators and developers passionate about merging productivity with gamification.";
+  } else if (message.includes("problem")) {
+    return "We help students and mentors stay organized and motivated by turning tasks into interactive quests.";
+  } else if (message.includes("service") || message.includes("product")) {
+    return "TaskTamer offers Quest Lists, Smart Scheduling, Leaderboards, and Habit Streak Tracking to boost productivity.";
+  } else if (message.includes("contact") || message.includes("support")) {
+    return "You can contact us at support@tasktamer.ai or follow us on Twitter and LinkedIn @TaskTamer.";
+  } else if (message.includes("vision") || message.includes("goal")) {
+    return "Our vision is to redefine productivity by making it fun, social, and personalized for learners and educators alike.";
+  } else {
+    return "I'm your friendly TaskTamer assistant! Ask me about our features, how to join, or anything else about our startup.";
+  }
+}
+
+// Ask Sample Question
+function askQuestion(question) {
+  chatInput.value = question;
+  sendMessage();
+}
+
+// Event Listeners
+sendButton.addEventListener("click", sendMessage);
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+
+
+    </script>
+
+   
+   
 </body>
 </html>
