@@ -175,17 +175,16 @@ counter.textContent = `Visits: ${visits}`;
       });
 
       let puterInitialized = false;
-      window.addEventListener("load", initializePuter);
-
-      function initializePuter() {
-         if (puterInitialized) return;
-         try {
-         puterInitialized = true;
-         console.log("Puter initialized");
-         } catch (error) {
-         console.error("Puter initialization error:", error);
-         puterInitialized = false;
-         }
+      async function initializePuter() {
+        if (puterInitialized) return;
+        try {
+          await puter.init();
+          puterInitialized = true;
+          console.log("Puter initialized");
+        } catch (error) {
+          console.error("Puter initialization error:", error);
+          puterInitialized = false;
+        }
       }
 
       const chatMessages = document.getElementById("chatMessages");
@@ -238,16 +237,18 @@ counter.textContent = `Visits: ${visits}`;
          sendButton.disabled = true;
          showTypingIndicator();
 
-         try {
-         await initializePuter();
+        try {
+          await initializePuter();
 
-         const fullPrompt = `${personalContext}\n\nUser question: ${message}\n\nPlease respond as the TaskTamer AI assistant, providing helpful and friendly information.`;
-
-         const response = await puter.ai.chat(fullPrompt, {
+          const response = await puter.ai.chat({
+            messages: [
+              { role: "system", content: personalContext },
+              { role: "user", content: message }
+            ],
             model: "gpt-4",
             temperature: 0.7,
-            max_tokens: 500,
-         });
+            max_tokens: 500
+          });
 
          hideTypingIndicator();
 
@@ -273,11 +274,15 @@ counter.textContent = `Visits: ${visits}`;
             return "We help students and mentors stay organized and motivated by turning tasks into interactive quests.";
          } else if (message.includes("service") || message.includes("product")) {
             return "TaskTamer offers Quest Lists, Smart Scheduling, Leaderboards, and Habit Streak Tracking to boost productivity.";
-         } else if (message.includes("contact") || message.includes("support")) {
+         } else if (message.includes("contact") || message.includes("support") || message.includes("involved")) {
             return "You can contact us using the contact form above, through our email at tasktamer@gmail.com or telephone number +254 111 239 593 ";
          } else if (message.includes("vision") || message.includes("goal")) {
             return "Our vision is To create a world where students feel confident, focused, and in control of their time—where getting things done feels as rewarding as playing a game. We imagine a future where productivity is not stressful, but empowering and even fun.";
-         } else {
+         } else if (message.includes("story") || message.includes("begin")) {
+            return "TaskTamer was born during a gap year by Merlyn Omagwa, a 17-year-old student who was tired of boring planners and procrastination. Inspired by how games keep us hooked with points, rewards, and goals, she teamed up with friends to create a new kind of productivity app—one that feels more like play than pressure.";
+         } else if (message.includes("mission")) {
+            return "To empower students to take charge of their time and goals through smart, gamified tools that make productivity feel fun and achievable.";
+        } else {
             return "I'm your friendly TaskTamer assistant! Ask me about our features, how to join, or anything else about our startup.";
          }
       }
